@@ -1,0 +1,47 @@
+version: '3.1'
+services:
+  mysqldb:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3307:3306"
+    networks:
+      - networking
+    healthcheck:
+      test: ["CMD-SHELL", "exit | mysql -h localhost -P 3306 -u root -p$$MYSQL_ROOT_PASSWORD" ]
+      timeout: 10s
+      retries: 10
+
+  spring_app:
+    build:
+      context: ./java-api
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      mysqldb:
+        condition: service_healthy
+    networks:
+      - networking
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f localhost:8080/actautor/health"]
+      interval: 15s
+      retries: 5
+      start_period: 30s
+
+  #https://prometheus.io/docs/prometheus/latest/installation
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+  
+  #https://grafana.com/docs/grafana/latest/setup-grafana/installation/docker/
+  graphana: 
+    image: grafana/grafana-oss
+    ports:
+      - "3000:3000"
+
+networks:
+  networking:
+    driver: bridge
