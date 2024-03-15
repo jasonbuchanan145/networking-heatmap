@@ -17,7 +17,6 @@ import reactor.core.publisher.Flux;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -56,7 +55,7 @@ public class TsharkHandlerService {
                         .lines()
                         .forEach(sink::next);
             });
-            //run in parallel because processing this can be resource intensive, especially with a network call and mysql ops
+            //run in parallel because processing this can be resource intensive, especially with a network call
             flux.parallel()
                     //tshark includes index frames, ignore
                     .filter(frame -> !frame.startsWith("{\"index\""))
@@ -85,7 +84,11 @@ public class TsharkHandlerService {
     }
 
     private void markGeo(IpInfo ipInfo, boolean isDst) {
-        Counter.builder(String.format("ip.addr.%s}",isDst?"dest":"src"));
+        Counter.builder("ip_accesses")
+                .description("The number of times an IP is accessed")
+                .tags("ip", ipInfo.getIp(), "loc", ipInfo.getLoc(), "postal", ipInfo.getPostal(), "city", ipInfo.getCity(), "country", ipInfo.getCountry())
+                .register(meterRegistry)
+                .increment();
     }
 
     private IpInfo getIpGeo(String ip) {
