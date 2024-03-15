@@ -1,4 +1,4 @@
-package edu.usd.jbuchan.ipheatmap;
+package edu.usd.jbuchan.ipheatmap.geometrics;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

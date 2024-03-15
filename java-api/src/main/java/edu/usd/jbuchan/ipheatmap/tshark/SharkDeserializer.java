@@ -1,4 +1,4 @@
-package edu.usd.jbuchan.ipheatmap;
+package edu.usd.jbuchan.ipheatmap.tshark;
 
 import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;
@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
 import java.io.IOException;
-import java.util.Collections;
 
 /**Tshark exports in the form of
 '{"timestamp":"1710532065797","layers":{"ip_src":["192.168.0.20"],"ip_dst":["162.254.192.75"],"frame_len":["108"]}}

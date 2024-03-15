@@ -1,4 +1,4 @@
-package edu.usd.jbuchan.ipheatmap;
+package edu.usd.jbuchan.ipheatmap.tshark;
 
 import lombok.Data;
 
