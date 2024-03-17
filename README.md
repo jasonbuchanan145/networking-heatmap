@@ -1,7 +1,7 @@
 # Networking Heatmap
 
 ## Summary
-Builds a heatmap of network traffic based on realtime tshark output
+A visualization tool chain for building a real time heatmap of network traffic
 
 ## System Requirements
 * Tshark be installed on the host system and that sudo access is not required to run against a network interface (see [this thread ](https://osqa-ask.wireshark.org/questions/7976/wireshark-setup-linux-for-nonroot-user/) for an example)
@@ -28,4 +28,4 @@ Navigate to localhost:9090 and view the output in the prometheus container
 Navigate to localhost:3030 and view the output in grafana
 
 ## Work left to do
-Heat map configuraitons are not stored in the grafana/ directory, only initalization settings in grafana/provisioning/datasources to link it automatically to prometheus since I am still changing visualizations. Once I settle on a reasonable default visualization I'll export the configuration
+Heat map configurations are not stored in the grafana/ directory, only initialization settings in grafana/provisioning/datasources to link it automatically to prometheus since I am still changing visualizations. Once I settle on a reasonable default visualization I'll export the configuration
