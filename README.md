@@ -16,7 +16,7 @@ Set the device you want to sniff packets on in java-api/src/resources/applicatio
 On linux you will probably want to change this to eth0 or whatever the network interface you want to run against. 
 
 ### Windows Firewall Exception 
-Because java runs tshark as a subprocess the a Windows Firewall exception also needs to include java rather than just tshark. The first time you run this application you _should_ get a popup from windows to allow java permission to view network activity 
+Because Java runs tshark as a subprocess a Windows Firewall Exception also needs to include Java. The first time you run this application you _should_ get a popup from Windows to allow java permission to view network activity 
 
 ### Start
 Start the docker compose for the Prometheus and Grafana containers
