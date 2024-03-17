@@ -1,7 +1,7 @@
 # Networking Heatmap
 
 ## Summary
-Builds a heatmap of network traffic based on realtime tshark output
+A visualization tool chain for building a real time heatmap of network traffic
 
 ## System Requirements
 * Tshark be installed on the host system and that sudo access is not required to run against a network interface (see [this thread ](https://osqa-ask.wireshark.org/questions/7976/wireshark-setup-linux-for-nonroot-user/) for an example)
