@@ -11,11 +11,9 @@ Builds a heatmap of network traffic based on realtime tshark output
 
 ## Run
 ### Configuration
-Set the device you want to sniff packets on in java-api/src/resources/application.properties. 
+Set the device you want to sniff packets on in java-api/src/resources/application.properties. By default this property is set for Windows default wireless interface "Wi-Fi". 
 
-By default this property is set for Windows default wireless interface "Wi-Fi". 
-
-On linux you will probably want to change this to eth0 or some other setting. 
+On linux you will probably want to change this to eth0 or whatever the network interface you want to run against. 
 ### Start
 Start the docker compose for the Prometheus and Grafana containers
 ```shell
