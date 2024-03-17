@@ -11,7 +11,11 @@ Builds a heatmap of network traffic based on realtime tshark output
 
 ## Run
 ### Configuration
-Set the device you want to sniff packets on in java-api/src/resources/application.properties. By default this property is set for Windows default wireless interface "Wi-Fi". On linux you will probably want to change this to eth0 or some other setting. 
+Set the device you want to sniff packets on in java-api/src/resources/application.properties. 
+
+By default this property is set for Windows default wireless interface "Wi-Fi". 
+
+On linux you will probably want to change this to eth0 or some other setting. 
 ### Start
 Start the docker compose for the Prometheus and Grafana containers
 ```shell
@@ -22,6 +26,7 @@ Go to the java-api package and start the spring boot app
 mvn spring-boot:run
 ```
 Navigate to localhost:9090 and view the output in the prometheus container
+
 Navigate to localhost:3030 and view the output in grafana
 
 ## Work left to do
