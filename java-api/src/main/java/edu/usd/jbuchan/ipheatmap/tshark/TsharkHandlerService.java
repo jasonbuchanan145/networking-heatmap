@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.usd.jbuchan.ipheatmap.geometrics.MetricsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -19,13 +20,16 @@ public class TsharkHandlerService {
 @Autowired
 MetricsService metricsService;
 
+@Value("${network.interface}")
+String device;
+
     private final ObjectMapper objectMapper;
 
     public TsharkHandlerService(@Autowired ObjectMapper objectMapper){
         this.objectMapper=objectMapper;
     }
     @Async
-    public void run(String device) throws IOException {
+    public void run() throws IOException {
         // -i for the network interface that is being measured, on mine it's "Wi-Fi"
         // -T ek formats it in the form of elastic search which outputs as json (but as opposed to -T json outputs it all on one line to make it easier for the object mapper)
         String[] args = new String[]{"tshark", "-i", device, "-T", "ek", "-e", "ip.src", "-e", "ip.dst", "-e", "frame.len", "-Y", "ip"};

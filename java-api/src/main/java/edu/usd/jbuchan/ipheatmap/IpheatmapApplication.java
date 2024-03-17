@@ -16,17 +16,14 @@ public class IpheatmapApplication {
 	@Autowired
 	TsharkHandlerService tsharkHandlerService;
 
+
+
 	public static void main(String[] args) {
 		SpringApplication.run(IpheatmapApplication.class, args);
 	}
 
 	@PostConstruct
 	public void init() throws Exception {
-		String networkInterface = System.getenv("network.interface");
-		log.info("interface is {}",networkInterface);
-		if (networkInterface == null) {
-			throw new IllegalArgumentException("Network interface not specified. Please use -Dnetwork.interface to specify it.");
-		}
-		tsharkHandlerService.run(networkInterface);
+		tsharkHandlerService.run();
 	}
 }
