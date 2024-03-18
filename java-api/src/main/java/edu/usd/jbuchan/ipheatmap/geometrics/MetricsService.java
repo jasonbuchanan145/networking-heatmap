@@ -47,10 +47,14 @@ public MetricsService(@Autowired MeterRegistry meterRegistry){
     }
 
     private void updateMetrics(IpInfo ipInfo) {
-        if(getGeo) {
+        if(getGeo&&StringUtils.hasText(ipInfo.getLoc())) {
+                //different format for the geo map plugin https://grafana.com/docs/grafana/latest/panels-visualizations/visualizations/geomap/
+                String[] split = ipInfo.getLoc().split(",");
+                String lat = split[0];
+                String longitude=split[1];
             Counter.builder("ip_accesses")
                     .description("The number of times an IP is accessed")
-                    .tags("ip", ipInfo.getIp(), "loc", ipInfo.getLoc(), "postal", ipInfo.getPostal(), "city", ipInfo.getCity(), "country", ipInfo.getCountry())
+                    .tags("ip", ipInfo.getIp(), "latitude",lat, "longitude", longitude,"loc", ipInfo.getLoc(), "postal", ipInfo.getPostal(), "city", ipInfo.getCity(), "country", ipInfo.getCountry())
                     .register(meterRegistry)
                     .increment();
         }else{
