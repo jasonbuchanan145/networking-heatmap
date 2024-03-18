@@ -4,7 +4,7 @@
 A visualization tool chain for building a real time heatmap of network traffic
 
 ## System Requirements
-* Tshark be installed on the host system and that sudo access is not required to run against a network interface (see [this thread ](https://osqa-ask.wireshark.org/questions/7976/wireshark-setup-linux-for-nonroot-user/) for an example)
+* Tshark be installed on the host system and that the user has permission to run it.
 * Docker cli
 * Java 21
 * A current version of maven
@@ -14,6 +14,10 @@ A visualization tool chain for building a real time heatmap of network traffic
 Set the device you want to sniff packets on in java-api/src/resources/application.properties. By default this property is set for Windows default wireless interface "Wi-Fi". 
 
 On linux you will probably want to change this to eth0 or whatever the network interface you want to run against. 
+
+### Windows Firewall Exception 
+Because Java runs tshark as a subprocess a Windows Firewall Exception also needs to include Java. The first time you run this application you _should_ get a popup from Windows to allow java permission to view network activity 
+
 ### Start
 Start the docker compose for the Prometheus and Grafana containers
 ```shell
