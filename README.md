@@ -29,7 +29,7 @@ mvn spring-boot:run
 ```
 Navigate to localhost:9090 and view the output in the prometheus container
 
-Navigate to localhost:3030 and view the output in grafana
+Navigate to localhost:3000 and view the output in grafana
 
 ## Work left to do
 Heat map configurations are not stored in the grafana/ directory, only initialization settings in grafana/provisioning/datasources to link it automatically to prometheus since I am still changing visualizations. Once I settle on a reasonable default visualization I'll export the configuration
