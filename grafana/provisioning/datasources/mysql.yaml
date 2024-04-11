@@ -1,0 +1,15 @@
+apiVersion: 1
+
+datasources:
+  - name: MySQL
+    type: mysql
+    access: proxy
+    url: http://host.docker.internal:3306
+    user: root
+    database: heatmap
+    secureJsonData:
+      password: ""
+    withCredentials: false
+    isDefault: false
+    jsonData:
+      tlsConfigurationMethod: "skip-verify"

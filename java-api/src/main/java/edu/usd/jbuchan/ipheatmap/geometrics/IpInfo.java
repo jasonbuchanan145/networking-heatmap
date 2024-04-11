@@ -18,4 +18,10 @@ public class IpInfo {
     private String city;
     @Column
     private String country;
+    @Column
+    private long count;
+
+    public void increment(){
+        ++this.count;
+    }
 }

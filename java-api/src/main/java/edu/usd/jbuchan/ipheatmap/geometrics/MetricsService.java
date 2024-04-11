@@ -3,15 +3,18 @@ package edu.usd.jbuchan.ipheatmap.geometrics;
 import edu.usd.jbuchan.ipheatmap.tshark.Shark;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
@@ -19,6 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class MetricsService {
     private final MeterRegistry meterRegistry;
     private final ConcurrentHashMap<String, IpInfo> geo=new ConcurrentHashMap<>();
+    private final IpInfoRepo ipInfoRepo;
     @Value("${geolocation.enabled}")
     private boolean getGeo;
     private WebClient webClient;
@@ -28,42 +32,44 @@ public class MetricsService {
     //also obviously there is no geo information for a localhost or a local address.
     private final String regexIpTest="^(127|192\\.168|10|172\\.(1[6-9]|2[0-9]|3[0-1])|169\\.254|22[4-9]|23[0-9]|255\\.255\\.255\\.255).*";
 @Autowired
-public MetricsService(@Autowired MeterRegistry meterRegistry){
+public MetricsService(@Autowired MeterRegistry meterRegistry, @Autowired IpInfoRepo ipInfoRepo){
+    this.ipInfoRepo = ipInfoRepo;
     this.webClient =  WebClient.create("http://ipinfo.io");
     this.meterRegistry = meterRegistry;
 }
 
-    public void makeMetrics(Shark shark){
+@PostConstruct
+public void init(){
+    buildMap();
+}
+//prefetch from db on startup and populate the memcache
+    @Transactional
+    protected void buildMap(){
+    ipInfoRepo.findAll().forEach(loc->{
+        geo.put(loc.getIp(),loc);
+    });
+}
+    public void makeMetrics(Shark shark) {
         //get the value of the geo located ip addresses if present, if not present fetch them
         //while also ensuring there isn't a race condition with the properties of the concurrent hashmap
-        if(!StringUtils.hasText(shark.getDestIp())||!shark.getDestIp().matches(regexIpTest)) {
+        if (!StringUtils.hasText(shark.getDestIp()) || !shark.getDestIp().matches(regexIpTest)) {
             IpInfo destIpInfo = geo.computeIfAbsent(shark.getDestIp(), this::getIpGeo);
             updateMetrics(destIpInfo);
         }
-        if(!shark.getSrcIp().matches(regexIpTest)) {
+        if (!shark.getSrcIp().matches(regexIpTest)) {
             IpInfo srcIpInfo = geo.computeIfAbsent(shark.getSrcIp(), this::getIpGeo);
             updateMetrics(srcIpInfo);
         }
     }
-
-    private void updateMetrics(IpInfo ipInfo) {
-        if(getGeo&&StringUtils.hasText(ipInfo.getLoc())) {
-                //different format for the geo map plugin https://grafana.com/docs/grafana/latest/panels-visualizations/visualizations/geomap/
-                String[] split = ipInfo.getLoc().split(",");
-                String lat = split[0];
-                String longitude=split[1];
-            Counter.builder("ip_accesses")
-                    .description("The number of times an IP is accessed")
-                    .tags("ip", ipInfo.getIp(), "latitude",lat, "longitude", longitude,"loc", ipInfo.getLoc(), "postal", ipInfo.getPostal(), "city", ipInfo.getCity(), "country", ipInfo.getCountry())
-                    .register(meterRegistry)
-                    .increment();
-        }else{
-            Counter.builder("ip_accesses")
-                    .description("The number of times an IP is accessed")
-                    .tags("ip", ipInfo.getIp())
-                    .register(meterRegistry)
-                    .increment();
-        }
+    @Transactional
+    protected void updateMetrics(IpInfo ipInfo) {
+        ipInfoRepo.findById(ipInfo.getIp()).ifPresentOrElse(info -> {
+            info.increment();
+            ipInfoRepo.save(info);
+        }, () -> {
+            ipInfo.increment();
+            ipInfoRepo.save(ipInfo);
+        });
     }
     private IpInfo getIpGeo(String ip) {
         IpInfo ipInfo=null;
