@@ -13,17 +13,16 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @EnableAsync
 public class IpheatmapApplication {
 
-	@Autowired
-	TsharkHandlerService tsharkHandlerService;
+    @Autowired
+    TsharkHandlerService tsharkHandlerService;
 
 
+    public static void main(String[] args) {
+        SpringApplication.run(IpheatmapApplication.class, args);
+    }
 
-	public static void main(String[] args) {
-		SpringApplication.run(IpheatmapApplication.class, args);
-	}
-
-	@PostConstruct
-	public void init() throws Exception {
-		tsharkHandlerService.run();
-	}
+    @PostConstruct
+    public void init() throws Exception {
+        tsharkHandlerService.run();
+    }
 }

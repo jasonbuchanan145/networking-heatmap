@@ -1,4 +1,4 @@
-package edu.usd.jbuchan.ipheatmap.geometrics;
+package edWu.usd.jbuchan.ipheatmap.geometrics;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -18,10 +18,4 @@ public class IpInfo {
     private String city;
     @Column
     private String country;
-    @Column
-    private long count;
-
-    public void increment(){
-        ++this.count;
-    }
 }
