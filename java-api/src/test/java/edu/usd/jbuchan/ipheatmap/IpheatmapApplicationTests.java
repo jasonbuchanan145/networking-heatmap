@@ -7,11 +7,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 class IpheatmapApplicationTests {
-	@Autowired
-	private CommandLineRunner clr;
-	@Test
-	void contextLoads() throws Exception {
-		this.clr.run();
-	}
+    @Autowired
+    private CommandLineRunner clr;
+
+    @Test
+    void contextLoads() throws Exception {
+        this.clr.run();
+    }
 
 }

@@ -17,17 +17,18 @@ import java.io.InputStreamReader;
 @Service
 @Slf4j
 public class TsharkHandlerService {
-@Autowired
-MetricsService metricsService;
+    @Autowired
+    MetricsService metricsService;
 
-@Value("${network.interface}")
-String device;
+    @Value("${network.interface}")
+    String device;
 
     private final ObjectMapper objectMapper;
 
-    public TsharkHandlerService(@Autowired ObjectMapper objectMapper){
-        this.objectMapper=objectMapper;
+    public TsharkHandlerService(@Autowired ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
     }
+
     @Async
     public void run() throws IOException {
         // -i for the network interface that is being measured, on mine it's "Wi-Fi"
@@ -51,8 +52,8 @@ String device;
                         } catch (JsonProcessingException e) {
                             throw new RuntimeException(e);
                         }
-            });
-        }finally{
+                    });
+        } finally {
             process.destroy();
         }
     }

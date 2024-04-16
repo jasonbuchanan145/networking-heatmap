@@ -8,11 +8,12 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
 import java.io.IOException;
 
-/**Tshark exports in the form of
-'{"timestamp":"1710532065797","layers":{"ip_src":["192.168.0.20"],"ip_dst":["162.254.192.75"],"frame_len":["108"]}}
-which is not a great structure for what I want to do so make a custom deserializer to deserialize that to a flat object
-*/
- public class SharkDeserializer extends StdDeserializer<Shark> {
+/**
+ * Tshark exports in the form of
+ * '{"timestamp":"1710532065797","layers":{"ip_src":["192.168.0.20"],"ip_dst":["162.254.192.75"],"frame_len":["108"]}}
+ * which is not a great structure for what I want to do so make a custom deserializer to deserialize that to a flat object
+ */
+public class SharkDeserializer extends StdDeserializer<Shark> {
 
     public SharkDeserializer() {
         this(null);
@@ -23,7 +24,7 @@ which is not a great structure for what I want to do so make a custom deserializ
     }
 
     @Override
-    public Shark deserialize(JsonParser jp, DeserializationContext ctxt)throws IOException, JacksonException {
+    public Shark deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JacksonException {
         JsonNode node = jp.getCodec().readTree(jp);
         //the layers child object of the string above
         JsonNode layersNode = node.get("layers");
