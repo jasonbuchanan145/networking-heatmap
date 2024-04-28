@@ -21,9 +21,8 @@ public interface TimescaleRepo extends JpaRepository<Timescale, Long> {
     @Modifying
     @Transactional
     default void incrementOrInsertByIp(String ip) {
-        findTimescaleByIpEqualsAndTimeGreaterThan(ip, System.currentTimeMillis() - 120000).ifPresentOrElse(ipDb -> {
-            incrementCountById(ipDb.getId());
-        }, () -> {
+        findTimescaleByIpEqualsAndTimeGreaterThan(ip, System.currentTimeMillis() - 120000)
+                .ifPresentOrElse(ipDb -> incrementCountById(ipDb.getId()), () -> {
             Timescale newEntry = new Timescale();
             newEntry.setIp(ip);
             newEntry.setTime(System.currentTimeMillis());

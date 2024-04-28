@@ -47,17 +47,16 @@ public class MetricsService {
     public void makeMetrics(Shark shark) {
         //get the value of the geo located ip addresses if present, if not present fetch them
         //while also ensuring there isn't a race condition with the properties of the concurrent hashmap
-        if (StringUtils.hasText(shark.getDestIp()) && !shark.getDestIp().matches(regexIpTest)) {
-            IpInfo destIpInfo = geo.computeIfAbsent(shark.getDestIp(), this::getIpGeo);
-            timescaleRepo.incrementOrInsertByIp(destIpInfo.getIp());
-        }
-        if (StringUtils.hasText(shark.getSrcIp()) && !shark.getSrcIp().matches(regexIpTest)) {
-            IpInfo srcIpInfo = geo.computeIfAbsent(shark.getSrcIp(), this::getIpGeo);
-            timescaleRepo.incrementOrInsertByIp(srcIpInfo.getIp());
+        handleIp(shark.getDestIp());
+        handleIp(shark.getSrcIp());
+    }
+    private void handleIp(String ip){
+        if (StringUtils.hasText(ip)&& !ip.matches(regexIpTest)) {
+            geo.computeIfAbsent(ip, this::fetchAndSaveIpLocation);
+            timescaleRepo.incrementOrInsertByIp(ip);
         }
     }
-
-    private IpInfo getIpGeo(String ip) {
+    private IpInfo fetchAndSaveIpLocation(String ip) {
         IpInfo ipInfo = null;
         if (getGeo) {
             try {
